@@ -2,8 +2,7 @@ import enum
 from enum import Enum
 import os
 from src.shared.domain.observability.observability_interface import IObservability
-
-from src.shared.domain.repositories.user_repository_interface import IUserRepository
+from src.shared.domain.repositories.product_repository_interface import IProductRepository
 
 
 class STAGE(Enum):
@@ -60,15 +59,15 @@ class Environments:
             self.dynamo_partition_key = os.environ.get("DYNAMO_PARTITION_KEY")
             self.dynamo_sort_key = os.environ.get("DYNAMO_SORT_KEY")
             self.cloud_front_distribution_domain = os.environ.get("CLOUD_FRONT_DISTRIBUTION_DOMAIN")
-
+        
     @staticmethod
-    def get_user_repo() -> IUserRepository:
+    def get_product_repo() -> IProductRepository:
         if Environments.get_envs().stage == STAGE.TEST:
-            from src.shared.infra.repositories.user_repository_mock import UserRepositoryMock
-            return UserRepositoryMock
+            from src.shared.infra.repositories.product_repository_mock import ProductRepositoryMock
+            return ProductRepositoryMock
         elif Environments.get_envs().stage in [STAGE.DEV, STAGE.HOMOLOG, STAGE.PROD]:
-            from src.shared.infra.repositories.user_repository_dynamo import UserRepositoryDynamo
-            return UserRepositoryDynamo
+            from src.shared.infra.repositories.product_repository_dynamo import ProductRepositoryDynamo
+            return ProductRepositoryDynamo
         else:
             raise Exception("No repository found for this stage")
 
